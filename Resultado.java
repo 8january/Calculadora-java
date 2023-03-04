@@ -56,34 +56,6 @@ public class Resultado {
 
 	}
 
-	private int contaOperacoesDeMultiplicacaoEDivisao() {
-		int contagem = 0;
-
-		for (int i = 0; i < operacoes.size(); i++) {
-			if (operacoes.get(i).equals("*") || operacoes.get(i).equals("/") || operacoes.get(i).equals("%"))
-				contagem++;
-		}
-
-		return contagem;
-	}
-
-	private int[] contaPosicoesComMultiplicacaoEDivisao() {
-
-		int[] posicoes = new int[contaOperacoesDeMultiplicacaoEDivisao()];
-		int flag = 0;
-
-		for (int i = 0; i < operacoes.size(); i++) {
-			if (operacoes.get(i).equals("*") || operacoes.get(i).equals("/") || operacoes.get(i).equals("%")) {
-				posicoes[flag] = i;
-				flag++;
-			}
-
-		}
-
-		return posicoes;
-
-	}
-
 	private void calcularMultiplicacaoEDivisaoNaArraylist() {
 		try {
 			while (operacoes.contains("*") || operacoes.contains("/") || operacoes.contains("%")) {
