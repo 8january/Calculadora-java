@@ -20,7 +20,7 @@ public class Resultado {
 
 	private void preencherArraylist() {
 
-		String numbers = "0";
+		String numbers = "";
 
 		for (int i = 0; i < contaMatematica.length(); i++) {
 			char c = contaMatematica.charAt(i);
@@ -29,27 +29,24 @@ public class Resultado {
 				numbers += c;
 			} else {
 				operacoes.add(String.valueOf(c));
-				numeros.add(Double.parseDouble(numbers.replace(",", ".").replaceFirst("\\.", "")));
+				numeros.add(Double.parseDouble(numbers.replace(",", ".")));
 
-				numbers = "0";
+				numbers = "";
 			}
 		}
-		
-		numeros.add(Double.parseDouble(numbers.replace(",", ".")));
-
 
 	}
 
 	private String calcular() {
 
-		String resultadoFinal = "0";
+		String resultadoFinal = "";
 
 		if (operacoes.contains("*") || operacoes.contains("/") || operacoes.contains("%"))
 			calcularMultiplicacaoEDivisaoNaArraylist();
 
-		if (operacoes.size() >= 2)
+		if (operacoes.size() > 1)
 			resultadoFinal = calcularSomaESubtracaoNaArraylist();
-		else if (numeros.size() == 1) {
+		else {
 			resultadoFinal = String.valueOf(numeros.get(0));
 			operacoes.removeAll(operacoes);
 			numeros.removeAll(numeros);
@@ -89,29 +86,28 @@ public class Resultado {
 
 	private void calcularMultiplicacaoEDivisaoNaArraylist() {
 		try {
-			int contagem = contaOperacoesDeMultiplicacaoEDivisao();
-			int[] posicoes = new int[contagem];
-
-			posicoes = contaPosicoesComMultiplicacaoEDivisao();
-
-			for (int indice = 0; indice < contagem; indice++) {
-				if (numeros.size() < 2) {
-					break;
+			while (operacoes.contains("*") || operacoes.contains("/") || operacoes.contains("%")) {
+				int index = -1;
+				for (int i = 0; i < operacoes.size(); i++) {
+					if (operacoes.get(i).equals("*") || operacoes.get(i).equals("/") || operacoes.get(i).equals("%")) {
+						index = i;
+						break;
+					}
 				}
-				switch (operacoes.get(posicoes[indice])) {
-				case "/":
-					numeros.set(posicoes[indice], numeros.get(posicoes[indice]) / numeros.get(posicoes[indice] + 1));
-					break;
-				case "*":
-					numeros.set(posicoes[indice], numeros.get(posicoes[indice]) * numeros.get(posicoes[indice] + 1));
-					break;
-				case "%":
-					numeros.set(posicoes[indice],
-							numeros.get(posicoes[indice]) / 100 * numeros.get(posicoes[indice] + 1));
-					break;
+				if (index != -1) {
+					switch (operacoes.get(index)) {
+					case "/":
+						numeros.set(index, numeros.get(index) / numeros.get(index + 1));
+						break;
+					case "*":
+						numeros.set(index, numeros.get(index) * numeros.get(index + 1));
+						break;
+					case "%":
+						numeros.set(index, numeros.get(index) / 100 * numeros.get(index + 1));
+						break;
+					}
+					removeOpAndNumber(index);
 				}
-
-				removeOpAndNumber(posicoes[indice]);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -120,30 +116,31 @@ public class Resultado {
 
 	private String calcularSomaESubtracaoNaArraylist() {
 
-		double resultado = numeros.get(0);
 		for (int i = 0; i < operacoes.size(); i++) {
-			switch (operacoes.get(i)) {
+
+			switch (operacoes.get(0)) {
 			case "+":
-				resultado += numeros.get(i + 1);
+				numeros.set(0, numeros.get(0) + numeros.get(1));
 				break;
 			case "-":
-				resultado -= numeros.get(i + 1);
+				numeros.set(0, numeros.get(0) - numeros.get(1));
 				break;
 			}
+
+			removeOpAndNumber(0);
 		}
 
-		operacoes.clear();
-		numeros.clear();
-		numeros.add(resultado);
+		String result = String.valueOf(numeros.get(0));
+		operacoes.removeAll(operacoes);
+		numeros.removeAll(numeros);
 
-		return String.valueOf(resultado);
+		return result;
+
 	}
 
 	private void removeOpAndNumber(int index) {
 		operacoes.remove(index);
-		if (numeros.size() > index + 1) {
-			numeros.remove(index + 1);
-		}
+		numeros.remove(index + 1);
 	}
 
 }
