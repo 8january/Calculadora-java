@@ -269,6 +269,7 @@ public class Calculadora extends JFrame {
 
 		private String parenteses() {
 
+			@SuppressWarnings("unused")
 			String valor = null;
 
 			if (parenteseAtivado) {

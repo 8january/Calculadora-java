@@ -29,24 +29,27 @@ public class Resultado {
 				numbers += c;
 			} else {
 				operacoes.add(String.valueOf(c));
-				numeros.add(Double.parseDouble(numbers.replace(",", ".")));
+				numeros.add(Double.parseDouble(numbers.replace(",", ".").replaceFirst("\\.", "")));
 
 				numbers = "0";
 			}
 		}
+		
+		numeros.add(Double.parseDouble(numbers.replace(",", ".")));
+
 
 	}
 
 	private String calcular() {
 
-		String resultadoFinal = "null";
+		String resultadoFinal = "0";
 
 		if (operacoes.contains("*") || operacoes.contains("/") || operacoes.contains("%"))
 			calcularMultiplicacaoEDivisaoNaArraylist();
 
-		if (numeros.size() > 1)
+		if (operacoes.size() >= 2)
 			resultadoFinal = calcularSomaESubtracaoNaArraylist();
-		else {
+		else if (numeros.size() == 1) {
 			resultadoFinal = String.valueOf(numeros.get(0));
 			operacoes.removeAll(operacoes);
 			numeros.removeAll(numeros);
@@ -92,6 +95,9 @@ public class Resultado {
 			posicoes = contaPosicoesComMultiplicacaoEDivisao();
 
 			for (int indice = 0; indice < contagem; indice++) {
+				if (numeros.size() < 2) {
+					break;
+				}
 				switch (operacoes.get(posicoes[indice])) {
 				case "/":
 					numeros.set(posicoes[indice], numeros.get(posicoes[indice]) / numeros.get(posicoes[indice] + 1));
@@ -114,31 +120,30 @@ public class Resultado {
 
 	private String calcularSomaESubtracaoNaArraylist() {
 
+		double resultado = numeros.get(0);
 		for (int i = 0; i < operacoes.size(); i++) {
-
-			switch (operacoes.get(0)) {
+			switch (operacoes.get(i)) {
 			case "+":
-				numeros.set(0, numeros.get(0) + numeros.get(1));
+				resultado += numeros.get(i + 1);
 				break;
 			case "-":
-				numeros.set(0, numeros.get(0) - numeros.get(1));
+				resultado -= numeros.get(i + 1);
 				break;
 			}
-
-			removeOpAndNumber(0);
 		}
 
-		String result = String.valueOf(numeros.get(0));
-		operacoes.removeAll(operacoes);
-		numeros.removeAll(numeros);
+		operacoes.clear();
+		numeros.clear();
+		numeros.add(resultado);
 
-		return result;
-
+		return String.valueOf(resultado);
 	}
 
 	private void removeOpAndNumber(int index) {
 		operacoes.remove(index);
-		numeros.remove(index + 1);
+		if (numeros.size() > index + 1) {
+			numeros.remove(index + 1);
+		}
 	}
 
 }
