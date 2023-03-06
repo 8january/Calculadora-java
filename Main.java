@@ -1,5 +1,7 @@
 package zero;
 
+import java.awt.Color;
+
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -14,6 +16,7 @@ public class Main {
 					break;
 				}
 			}
+
 		} catch (Exception e) {
 		}
 
