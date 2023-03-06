@@ -1,5 +1,7 @@
 package zero;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 public class Resultado {
@@ -11,11 +13,33 @@ public class Resultado {
 
 	public String calcula(String contaMatematica) {
 
-		this.contaMatematica = contaMatematica;
-		preencherArraylist();
+		this.contaMatematica = contaMatematica.replace(" ", "");
+		if (contaMatematica.equals("=") || naoPossuiNumeros(contaMatematica))
+			return "";
 
+		preencherArraylist();
 		return calcular();
 
+	}
+
+	public String formatarNumero(double numero) {
+		DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+		simbolos.setDecimalSeparator(',');
+		simbolos.setGroupingSeparator('.');
+
+		DecimalFormat formato = new DecimalFormat("###,###.##", simbolos);
+		return formato.format(numero);
+	}
+
+	public boolean naoPossuiNumeros(String stringContaMatematica) {
+
+		for (int i = 0; i < stringContaMatematica.length(); i++) {
+			char c = stringContaMatematica.charAt(i);
+			if (Character.isDigit(c))
+				return false;
+		}
+
+		return true;
 	}
 
 	private void preencherArraylist() {
@@ -38,10 +62,9 @@ public class Resultado {
 	}
 
 	private String calcular() {
-
 		String resultadoFinal = "";
 
-		if (operacoes.contains("*") || operacoes.contains("/") || operacoes.contains("%"))
+		if ((operacoes.contains("×") || operacoes.contains("÷") || operacoes.contains("%")))
 			calcularMultiplicacaoEDivisaoNaArraylist();
 
 		if (operacoes.size() > 1)
@@ -52,26 +75,25 @@ public class Resultado {
 			numeros.removeAll(numeros);
 		}
 
-		return String.format("%.2f", Double.parseDouble(resultadoFinal));
-
+		return formatarNumero(Double.parseDouble(resultadoFinal));
 	}
 
 	private void calcularMultiplicacaoEDivisaoNaArraylist() {
 		try {
-			while (operacoes.contains("*") || operacoes.contains("/") || operacoes.contains("%")) {
+			while (operacoes.contains("×") || operacoes.contains("÷") || operacoes.contains("%")) {
 				int index = -1;
 				for (int i = 0; i < operacoes.size(); i++) {
-					if (operacoes.get(i).equals("*") || operacoes.get(i).equals("/") || operacoes.get(i).equals("%")) {
+					if (operacoes.get(i).equals("×") || operacoes.get(i).equals("÷") || operacoes.get(i).equals("%")) {
 						index = i;
 						break;
 					}
 				}
 				if (index != -1) {
 					switch (operacoes.get(index)) {
-					case "/":
+					case "÷":
 						numeros.set(index, numeros.get(index) / numeros.get(index + 1));
 						break;
-					case "*":
+					case "×":
 						numeros.set(index, numeros.get(index) * numeros.get(index + 1));
 						break;
 					case "%":
