@@ -294,22 +294,15 @@ public class Calculadora extends JFrame {
 		}
 
 		private void calcular() {
-			campoResultado.setText(" " + contaResultado.calcula(contaMatematica));
-			contaMatematica = "";
+			String resultadoCalculado = contaResultado.calcula(contaMatematica);
+			campoResultado.setText(" " + resultadoCalculado);
+			contaMatematica = resultadoCalculado;
 		}
 	}
 
 	private boolean ehUmaOperacao(String valor) {
 
 		if (valor.equals("+") || valor.equals("-") || valor.equals("÷") || valor.equals("×") || valor.equals("%"))
-			return true;
-
-		return false;
-	}
-
-	private boolean ehUmNumero(String valor) {
-
-		if (Character.isDigit(valor.charAt(0)))
 			return true;
 
 		return false;
