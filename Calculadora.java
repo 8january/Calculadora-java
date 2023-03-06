@@ -161,7 +161,7 @@ public class Calculadora extends JFrame {
 		resultado.setSize(opSize);
 		resultado.setFont(fontePadrao);
 		resultado.setBackground(background);
-		resultado.setForeground(Color.white);
+		resultado.setForeground(operacaoCor);
 		resultado.setLocation(360, 480);
 		resultado.addActionListener(numberListener);
 
@@ -194,7 +194,7 @@ public class Calculadora extends JFrame {
 		subtracao.addActionListener(numberListener);
 		subtracao.setLocation((int) (panelNumeros.getWidth() - opSize.getWidth()) - 20, 120);
 
-		divisao = new JButton("/");
+		divisao = new JButton("÷");
 		divisao.setSize(opSize);
 		divisao.setFont(fonteOperacoes);
 		divisao.setBackground(background);
@@ -202,7 +202,7 @@ public class Calculadora extends JFrame {
 		divisao.addActionListener(numberListener);
 		divisao.setLocation((int) (panelNumeros.getWidth() - opSize.getWidth()) - 20, 240);
 
-		multiplicacao = new JButton("*");
+		multiplicacao = new JButton("×");
 		multiplicacao.setSize(opSize);
 		multiplicacao.setFont(fonteOperacoes);
 		multiplicacao.setBackground(background);
@@ -240,6 +240,13 @@ public class Calculadora extends JFrame {
 
 			String valor = e.getActionCommand();
 
+			if (ehUmaOperacao(valor) && terminaComOperacao(contaMatematica))
+				valor = "";
+
+			if (valor.equals(","))
+				if (terminaComOperacao(contaMatematica))
+					valor = "";
+
 			switch (valor) {
 			case "C":
 				valor = clear();
@@ -254,7 +261,11 @@ public class Calculadora extends JFrame {
 			}
 
 			contaMatematica += valor;
-			campoResultado.setText(" " + contaMatematica);
+
+			if (iniciaComOperacao(contaMatematica))
+				contaMatematica = contaMatematica.substring(1);
+
+			campoResultado.setText(" " + contaMatematica.replace("=", ""));
 
 			if (valor.equals("=")) {
 				calcular();
@@ -286,6 +297,47 @@ public class Calculadora extends JFrame {
 			campoResultado.setText(" " + contaResultado.calcula(contaMatematica));
 			contaMatematica = "";
 		}
+	}
+
+	private boolean ehUmaOperacao(String valor) {
+
+		if (valor.equals("+") || valor.equals("-") || valor.equals("÷") || valor.equals("×") || valor.equals("%"))
+			return true;
+
+		return false;
+	}
+
+	private boolean ehUmNumero(String valor) {
+
+		if (Character.isDigit(valor.charAt(0)))
+			return true;
+
+		return false;
+	}
+
+	private boolean iniciaComOperacao(String conta) {
+
+		if (conta.length() == 0)
+			return false;
+
+		conta = Character.toString(conta.charAt(0));
+
+		if (conta.equals("+") || conta.equals("-") || conta.equals("÷") || conta.equals("×") || conta.equals("%"))
+			return true;
+
+		return false;
+	}
+
+	private boolean terminaComOperacao(String conta) {
+		if (conta.length() == 0)
+			return false;
+
+		conta = Character.toString(conta.charAt(conta.length() - 1));
+
+		if (conta.equals("+") || conta.equals("-") || conta.equals("÷") || conta.equals("×") || conta.equals("%"))
+			return true;
+
+		return false;
 	}
 
 }
